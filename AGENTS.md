@@ -2,7 +2,7 @@
 
 ## Stack
 
-- **Spring Boot 4.1.0 / Java 25** — Maven-compiler-plugin 3.15.0 does not support `--release` for Java 25; pom.xml sets `maven.compiler.release` empty, uses `source`/`target` instead
+- **Spring Boot 4.1.0 / Java 21** — compiled with JDK 25 but targeting Java 21
 - **Maven wrapper** (`./mvnw`) — no Gradle
 - **Thymeleaf** templates in `src/main/resources/templates/` with `th:replace="~{fragments/navbar :: navbar}"` for layout
 - **Spring Data JPA** with H2 in-memory (`create-drop` DDL), MySQL connector available but commented out

@@ -4,9 +4,14 @@ import com.miempresa.evaluacion_final.model.Pregunta;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PreguntaRepository extends JpaRepository<Pregunta, Long> {
     Page<Pregunta> findAllByOrderByTematicaIdAscIdAsc(Pageable pageable);
+
+    @Query("SELECT p FROM Pregunta p WHERE (:tematicaId IS NULL OR p.tematica.id = :tematicaId) AND (:clase IS NULL OR TYPE(p) = :clase)")
+    Page<Pregunta> findFiltered(@Param("tematicaId") Long tematicaId, @Param("clase") Class<? extends Pregunta> clase, Pageable pageable);
 }

@@ -1,6 +1,9 @@
 package com.miempresa.evaluacion_final.service;
 
 import com.miempresa.evaluacion_final.model.Pregunta;
+import com.miempresa.evaluacion_final.model.PreguntaSeleccionMultiple;
+import com.miempresa.evaluacion_final.model.PreguntaSeleccionUnica;
+import com.miempresa.evaluacion_final.model.PreguntaVerdaderoFalso;
 import com.miempresa.evaluacion_final.repository.PreguntaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +24,11 @@ public class PreguntaServiceImpl implements IPreguntaService{
         return preguntaRepository.findAllByOrderByTematicaIdAscIdAsc(pageable);
     }
 
+    public Page<Pregunta> listarFiltradas(Long tematicaId, String tipo, Pageable pageable) {
+        Class<? extends Pregunta> clase = mapTipoAClase(tipo);
+        return preguntaRepository.findFiltered(tematicaId, clase, pageable);
+    }
+
     public Optional<Pregunta> obtenerPorId(Long id) {
         return preguntaRepository.findById(id);
     }
@@ -31,5 +39,15 @@ public class PreguntaServiceImpl implements IPreguntaService{
 
     public void eliminar(Long id) {
         preguntaRepository.deleteById(id);
+    }
+
+    private Class<? extends Pregunta> mapTipoAClase(String tipo) {
+        if (tipo == null || tipo.isEmpty()) return null;
+        return switch (tipo) {
+            case "V_F" -> PreguntaVerdaderoFalso.class;
+            case "UNICA" -> PreguntaSeleccionUnica.class;
+            case "MULTIPLE" -> PreguntaSeleccionMultiple.class;
+            default -> Pregunta.class;
+        };
     }
 }

@@ -1,15 +1,24 @@
 package com.miempresa.evaluacion_final.model;
 
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo_pregunta", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("ABIERTA")
 public class Pregunta {
 
     @Id
@@ -20,8 +29,6 @@ public class Pregunta {
     @Size(min = 2, max = 150, message = "{pregunta.enunciado.size}")
     private String enunciado;
 
-    @NotBlank(message = "{pregunta.respuesta.notblank}")
-    @Size(min = 2, max = 150, message = "{pregunta.respuesta.size}")
     private String respuesta;
 
     @NotNull(message = "{pregunta.tematica.notnull}")
@@ -66,5 +73,21 @@ public class Pregunta {
 
     public void setTematica(Tematica tematica) {
         this.tematica = tematica;
+    }
+
+    @Transient
+    public String getTipo() {
+        DiscriminatorValue dv = getClass().getAnnotation(DiscriminatorValue.class);
+        return dv != null ? dv.value() : "ABIERTA";
+    }
+
+    @Transient
+    public String getTipoDescripcion() {
+        return switch (getTipo()) {
+            case "V_F" -> "Verdadero/Falso";
+            case "UNICA" -> "Selección Única";
+            case "MULTIPLE" -> "Selección Múltiple";
+            default -> "Abierta";
+        };
     }
 }
