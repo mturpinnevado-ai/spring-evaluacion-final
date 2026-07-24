@@ -5,6 +5,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Pregunta {
@@ -13,10 +16,15 @@ public class Pregunta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "{pregunta.enunciado.notblank}")
+    @Size(min = 2, max = 150, message = "{pregunta.enunciado.size}")
     private String enunciado;
 
+    @NotBlank(message = "{pregunta.respuesta.notblank}")
+    @Size(min = 2, max = 150, message = "{pregunta.respuesta.size}")
     private String respuesta;
 
+    @NotNull(message = "{pregunta.tematica.notnull}")
     @ManyToOne
     private Tematica tematica;
 

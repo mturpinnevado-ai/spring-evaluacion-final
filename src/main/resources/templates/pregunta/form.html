@@ -16,20 +16,26 @@
 
             <div class="mb-3">
                 <label for="enunciado" class="form-label">Enunciado</label>
-                <input type="text" id="enunciado" th:field="*{enunciado}" class="form-control" required>
+                <input type="text" id="enunciado" th:field="*{enunciado}"
+                       class="form-control" th:classappend="${#fields.hasErrors('enunciado')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('enunciado')}" th:errors="*{enunciado}">Error</div>
             </div>
 
             <div class="mb-3">
                 <label for="respuesta" class="form-label">Respuesta</label>
-                <input type="text" id="respuesta" th:field="*{respuesta}" class="form-control" required>
+                <input type="text" id="respuesta" th:field="*{respuesta}"
+                       class="form-control" th:classappend="${#fields.hasErrors('respuesta')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('respuesta')}" th:errors="*{respuesta}">Error</div>
             </div>
 
             <div class="mb-3">
                 <label for="tematica" class="form-label">Temática</label>
-                <select id="tematica" th:field="*{tematica}" class="form-select" required>
+                <select id="tematica" th:field="*{tematica}"
+                        class="form-select" th:classappend="${#fields.hasErrors('tematica')} ? 'is-invalid'">
                     <option value="">Seleccione una temática</option>
                     <option th:each="t : ${tematicas}" th:value="${t.id}" th:text="${t.nombre}"></option>
                 </select>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('tematica')}" th:errors="*{tematica}">Error</div>
             </div>
 
             <div class="d-flex gap-2">
