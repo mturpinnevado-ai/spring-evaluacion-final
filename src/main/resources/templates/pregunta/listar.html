@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preguntas - Evaluación Final</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1>Preguntas</h1>
+            <a class="btn btn-primary" th:href="@{/preguntas/nueva}">Nueva Pregunta</a>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Enunciado</th>
+                    <th>Respuesta</th>
+                    <th>Temática</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="pregunta : ${preguntas.content}">
+                    <td th:text="${pregunta.id}">1</td>
+                    <td th:text="${pregunta.enunciado}">Enunciado</td>
+                    <td th:text="${pregunta.respuesta}">Respuesta</td>
+                    <td th:text="${pregunta.tematica.nombre}">Temática</td>
+                    <td>
+                        <a class="btn btn-sm btn-warning" th:href="@{/preguntas/editar/{id}(id=${pregunta.id})}">Editar</a>
+                        <a class="btn btn-sm btn-danger" th:href="@{/preguntas/eliminar/{id}(id=${pregunta.id})}"
+                           onclick="return confirm('¿Eliminar esta pregunta?')">Eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <nav th:if="${preguntas.totalPages > 1}" aria-label="Paginación">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${preguntas.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/preguntas(page=0, size=${preguntas.size})}">&laquo;</a>
+                </li>
+                <li class="page-item" th:classappend="${preguntas.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/preguntas(page=${preguntas.number - 1}, size=${preguntas.size})}">&lsaquo;</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, preguntas.totalPages - 1)}"
+                    th:classappend="${i == preguntas.number} ? 'active'">
+                    <a class="page-link" th:href="@{/preguntas(page=${i}, size=${preguntas.size})}" th:text="${i + 1}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${preguntas.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/preguntas(page=${preguntas.number + 1}, size=${preguntas.size})}">&rsaquo;</a>
+                </li>
+                <li class="page-item" th:classappend="${preguntas.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/preguntas(page=${preguntas.totalPages - 1}, size=${preguntas.size})}">&raquo;</a>
+                </li>
+            </ul>
+        </nav>
+        <p th:if="${preguntas.totalPages > 0}" class="text-center text-muted">
+            Página <span th:text="${preguntas.number + 1}">1</span>
+            de <span th:text="${preguntas.totalPages}">1</span>
+            (<span th:text="${preguntas.totalElements}">0</span> preguntas)
+        </p>
+    </div>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
