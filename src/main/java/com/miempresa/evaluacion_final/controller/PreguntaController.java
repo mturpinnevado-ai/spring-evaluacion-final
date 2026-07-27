@@ -1,6 +1,5 @@
 package com.miempresa.evaluacion_final.controller;
 
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import org.springframework.web.bind.annotation.ExceptionHandler;
-
 import com.miempresa.evaluacion_final.exception.PreguntaNoEncontradaException;
 import com.miempresa.evaluacion_final.model.Pregunta;
 import com.miempresa.evaluacion_final.model.PreguntaSeleccionMultiple;
@@ -25,6 +22,8 @@ import com.miempresa.evaluacion_final.model.PreguntaVerdaderoFalso;
 import com.miempresa.evaluacion_final.model.Tematica;
 import com.miempresa.evaluacion_final.service.IPreguntaService;
 import com.miempresa.evaluacion_final.service.ITematicaService;
+
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/preguntas")

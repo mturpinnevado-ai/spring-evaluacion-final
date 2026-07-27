@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API - Evaluación Final</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        body { display: flex; flex-direction: column; height: 100vh; margin: 0; }
+        iframe { flex: 1; border: none; width: 100%; }
+    </style>
+</head>
+<body>
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+    <iframe th:src="@{/swagger-ui/index.html}"></iframe>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
