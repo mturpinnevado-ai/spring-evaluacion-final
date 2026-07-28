@@ -19,11 +19,19 @@
 
 `com.miempresa.evaluacion_final` — underscore (Java package restriction), not hyphen.
 
+## Testing
+
+- Tests use **Mockito** (`@ExtendWith(MockitoExtension.class)`, no `@SpringBootTest`) — service and controller tests are pure unit tests
+- `PreguntaControllerTest` (313 lines) covers all CRUD operations + validation for all 4 question types
+- `PreguntaServiceImplTest` (238 lines) covers filtering by temática, type, and both, plus CRUD
+- `PreguntaRestControllerTest` (191 lines) — REST controller tested with `MockMvcBuilders.standaloneSetup` (not `@WebMvcTest`)
+- **Spring Boot 4.1 removed `@MockBean`/`@MockitoBean`** — `@WebMvcTest` and `@SpringBootTest` + `@AutoConfigureMockMvc` cannot inject mocks into the context. REST controller tests must use `MockMvcBuilders.standaloneSetup` with `@ExtendWith(MockitoExtension.class)`, `PageableHandlerMethodArgumentResolver`, a manual `@ControllerAdvice` for exception→HTTP mapping, and `JsonMapper` with `SpringDataJacksonConfiguration.pageModule()` for `Page` serialization.
+
 ## Build & run
 
 ```bash
 ./mvnw spring-boot:run        # dev server on port 8080
-./mvnw test                   # all tests (only contextLoads smoke test exists)
+./mvnw test                   # all tests (3 test classes, ~550 lines)
 ./mvnw test -Dtest=ClassName  # single test class
 ./mvnw clean package          # build JAR in target/
 ```
@@ -33,6 +41,7 @@
 - `server.error.whitelabel.enabled=false` — custom error controller handles 400/403/500
 - `spring.jpa.show-sql=true` — Hibernate SQL logged to console
 - `spring.jpa.hibernate.ddl-auto=create-drop` — data reset on restart
+- `jwt.secret` — Base64-encoded key, defined in properties (not env var)
 
 ## Seed data (`import.sql`)
 
