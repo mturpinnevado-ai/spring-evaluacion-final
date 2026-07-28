@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +11,7 @@
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1>Preguntas</h1>
-            <a class="btn btn-primary" th:href="@{/preguntas/nueva}">Nueva Pregunta</a>
+            <a class="btn btn-primary" sec:authorize="hasRole('ADMIN')" th:href="@{/preguntas/nueva}">Nueva Pregunta</a>
         </div>
 
         <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -55,7 +55,7 @@
                     <th>Tipo</th>
                     <th>Respuesta</th>
                     <th>Temática</th>
-                    <th>Acciones</th>
+                    <th sec:authorize="hasRole('ADMIN')">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -71,10 +71,12 @@
                         <span th:if="${pregunta.tipo == 'MULTIPLE'}" th:text="${pregunta.opcionesCorrectas}">Opciones</span>
                     </td>
                     <td th:text="${pregunta.tematica.nombre}">Temática</td>
-                    <td>
-                        <a class="btn btn-sm btn-warning" th:href="@{/preguntas/editar/{id}(id=${pregunta.id})}">Editar</a>
-                        <a class="btn btn-sm btn-danger" th:href="@{/preguntas/eliminar/{id}(id=${pregunta.id})}"
-                           onclick="return confirm('¿Eliminar esta pregunta?')">Eliminar</a>
+                    <td sec:authorize="hasRole('ADMIN')">
+                        <span>
+                            <a class="btn btn-sm btn-warning" th:href="@{/preguntas/editar/{id}(id=${pregunta.id})}">Editar</a>
+                            <a class="btn btn-sm btn-danger" th:href="@{/preguntas/eliminar/{id}(id=${pregunta.id})}"
+                               onclick="return confirm('¿Eliminar esta pregunta?')">Eliminar</a>
+                        </span>
                     </td>
                 </tr>
             </tbody>

@@ -1,19 +1,13 @@
 package com.miempresa.evaluacion_final.controller;
 
-import com.miempresa.evaluacion_final.exception.PreguntaNoEncontradaException;
-import com.miempresa.evaluacion_final.model.Pregunta;
-import com.miempresa.evaluacion_final.model.PreguntaDTO;
-import com.miempresa.evaluacion_final.model.PreguntaSeleccionMultiple;
-import com.miempresa.evaluacion_final.model.PreguntaSeleccionUnica;
-import com.miempresa.evaluacion_final.model.PreguntaVerdaderoFalso;
-import com.miempresa.evaluacion_final.model.Tematica;
-import com.miempresa.evaluacion_final.service.IPreguntaService;
-import com.miempresa.evaluacion_final.repository.TematicaRepository;
+import java.util.Map;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +19,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
+import com.miempresa.evaluacion_final.exception.PreguntaNoEncontradaException;
+import com.miempresa.evaluacion_final.model.Pregunta;
+import com.miempresa.evaluacion_final.model.PreguntaDTO;
+import com.miempresa.evaluacion_final.model.PreguntaSeleccionMultiple;
+import com.miempresa.evaluacion_final.model.PreguntaSeleccionUnica;
+import com.miempresa.evaluacion_final.model.PreguntaVerdaderoFalso;
+import com.miempresa.evaluacion_final.model.Tematica;
+import com.miempresa.evaluacion_final.repository.TematicaRepository;
+import com.miempresa.evaluacion_final.service.IPreguntaService;
 
 @RestController
 @RequestMapping("/api/preguntas")
@@ -55,6 +57,7 @@ public class PreguntaRestController {
                 .orElseThrow(() -> new PreguntaNoEncontradaException(id));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PreguntaDTO crear(@RequestBody Map<String, Object> body) {
@@ -89,6 +92,7 @@ public class PreguntaRestController {
         return PreguntaDTO.fromEntity(preguntaService.guardar(pregunta));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public PreguntaDTO actualizar(@PathVariable Long id, @RequestBody Map<String, Object> body) {
         preguntaService.obtenerPorId(id)
@@ -126,6 +130,7 @@ public class PreguntaRestController {
         return PreguntaDTO.fromEntity(preguntaService.guardar(pregunta));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {
