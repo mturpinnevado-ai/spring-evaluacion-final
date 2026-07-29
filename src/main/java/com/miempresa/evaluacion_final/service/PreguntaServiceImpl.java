@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,6 +28,13 @@ public class PreguntaServiceImpl implements IPreguntaService{
     public Page<Pregunta> listarFiltradas(Long tematicaId, String tipo, Pageable pageable) {
         Class<? extends Pregunta> clase = mapTipoAClase(tipo);
         return preguntaRepository.findFiltered(tematicaId, clase, pageable);
+    }
+
+    public List<Pregunta> listarParaJuego(Long tematicaId) {
+        if (tematicaId == null) {
+            return preguntaRepository.findAll();
+        }
+        return preguntaRepository.findByTematicaId(tematicaId);
     }
 
     public Optional<Pregunta> obtenerPorId(Long id) {

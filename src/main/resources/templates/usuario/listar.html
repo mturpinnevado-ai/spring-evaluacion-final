@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios - Evaluación Final</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1>Usuarios</h1>
+            <a class="btn btn-primary" th:href="@{/usuarios/nuevo}">Nuevo Usuario</a>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Activo</th>
+                    <th>Roles</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="usuario : ${usuarios}">
+                    <td th:text="${usuario.id}">1</td>
+                    <td th:text="${usuario.username}">username</td>
+                    <td th:text="${usuario.email}">email</td>
+                    <td>
+                        <span th:if="${usuario.enabled}" class="badge bg-success">Sí</span>
+                        <span th:unless="${usuario.enabled}" class="badge bg-danger">No</span>
+                    </td>
+                    <td>
+                        <span th:each="rol : ${usuario.roles}" class="badge bg-info me-1" th:text="${rol.nombre}">ROLE</span>
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-warning" th:href="@{/usuarios/editar/{id}(id=${usuario.id})}">Editar</a>
+                        <a class="btn btn-sm btn-danger" th:href="@{/usuarios/eliminar/{id}(id=${usuario.id})}"
+                           onclick="return confirm('¿Eliminar este usuario?')">Eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

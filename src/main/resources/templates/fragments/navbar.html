@@ -12,10 +12,16 @@
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/}">Inicio</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/preguntas}">Preguntas</a>
-                </li>
-                <li class="nav-item">
+<li class="nav-item">
+                     <a class="nav-link" th:href="@{/preguntas}">Preguntas</a>
+                 </li>
+                 <li class="nav-item">
+                     <a class="nav-link" th:href="@{/juego}">Jugar</a>
+                 </li>
+                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                     <a class="nav-link" th:href="@{/usuarios}">Usuarios</a>
+                 </li>
+                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/swagger}">API</a>
                 </li>
             </ul>

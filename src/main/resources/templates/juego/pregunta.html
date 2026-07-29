@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pregunta <span th:text="${indice + 1}"></span> - Juego Trivial</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="text-muted">Juego Trivial</h5>
+                        <span class="badge bg-primary fs-6">Pregunta <span th:text="${indice + 1}"></span> de <span th:text="${total}"></span></span>
+                    </div>
+                    <div class="progress mt-2" style="height: 8px;">
+                        <div class="progress-bar" th:style="|width: ${indice * 100 / total}%|"></div>
+                    </div>
+                </div>
+
+                <form th:action="@{/juego/responder}" method="post" class="card shadow-sm">
+                    <input type="hidden" name="indice" th:value="${indice}">
+                    <input type="hidden" name="tipo" th:value="${pregunta.tipo}">
+
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <span class="badge"
+                                  th:classappend="${pregunta.tipo == 'ABIERTA'} ? 'bg-secondary' : (${pregunta.tipo == 'V_F'} ? 'bg-info' : (${pregunta.tipo == 'UNICA'} ? 'bg-primary' : 'bg-success'))"
+                                  th:text="${pregunta.tipoDescripcion}">Tipo</span>
+                    </h5>
+                </div>
+
+                <div class="card-body">
+                    <h4 class="card-title mb-4" th:text="${pregunta.enunciado}">Enunciado de la pregunta</h4>
+
+                    <div th:if="${pregunta.tipo == 'ABIERTA'}">
+                        <div class="mb-3">
+                            <label for="respuesta" class="form-label">Tu respuesta:</label>
+                            <input type="text" id="respuesta" name="respuesta" class="form-control form-control-lg"
+                                   placeholder="Escribe tu respuesta..." required autofocus>
+                        </div>
+                    </div>
+
+                    <div th:if="${pregunta.tipo == 'V_F'}">
+                        <div class="d-flex justify-content-center gap-4 mt-3">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="esVerdadero"
+                                       id="vf-verdadero" value="true" required>
+                                <label class="form-check-label fs-5" for="vf-verdadero">Verdadero</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="esVerdadero"
+                                       id="vf-falso" value="false" required>
+                                <label class="form-check-label fs-5" for="vf-falso">Falso</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${pregunta.tipo == 'UNICA'}">
+                        <div class="mt-3">
+                            <div th:each="opcion : ${opcionesList}" class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="opcionSeleccionada"
+                                       th:id="'unica-' + ${opcion}" th:value="${opcion}" required>
+                                <label class="form-check-label fs-5" th:for="'unica-' + ${opcion}" th:text="${opcion}">Opción</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${pregunta.tipo == 'MULTIPLE'}">
+                        <div class="mt-3">
+                            <div th:each="opcion : ${opcionesList}" class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="opcionesSeleccionadas"
+                                       th:id="'multiple-' + ${opcion}" th:value="${opcion}">
+                                <label class="form-check-label fs-5" th:for="'multiple-' + ${opcion}" th:text="${opcion}">Opción</label>
+                            </div>
+                            <div class="form-text">Selecciona una o más opciones.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer text-end">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <span th:if="${indice + 1 < total}">Siguiente Pregunta</span>
+                        <span th:if="${indice + 1 >= total}">Ver Resultados</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
