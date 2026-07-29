@@ -27,6 +27,8 @@ public class CustomErrorController implements ErrorController {
                 return "error/400";
             } else if (statusCode == 403) {
                 return "error/403";
+            } else if (statusCode == 404) {
+                return "error/404";
             } else if (statusCode == 500) {
                 return "error/500";
             }
