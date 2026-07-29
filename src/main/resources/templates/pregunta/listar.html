@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preguntas - Evaluación Final</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1>Preguntas</h1>
+            <a class="btn btn-primary" sec:authorize="hasRole('ADMIN')" th:href="@{/preguntas/nueva}">Nueva Pregunta</a>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <form class="row g-3 mb-4 p-3 border rounded bg-light" th:action="@{/preguntas}" method="get">
+            <div class="col-md-5">
+                <label for="tematicaId" class="form-label">Temática</label>
+                <select id="tematicaId" name="tematicaId" class="form-select">
+                    <option value="">Todas las temáticas</option>
+                    <option th:each="t : ${tematicas}" th:value="${t.id}" th:text="${t.nombre}"
+                            th:selected="${tematicaId != null and tematicaId == t.id}"></option>
+                </select>
+            </div>
+            <div class="col-md-5">
+                <label for="tipo" class="form-label">Tipo de Pregunta</label>
+                <select id="tipo" name="tipo" class="form-select">
+                    <option value="">Todos los tipos</option>
+                    <option value="ABIERTA" th:selected="${tipoFiltro == 'ABIERTA'}">Abierta</option>
+                    <option value="V_F" th:selected="${tipoFiltro == 'V_F'}">Verdadero/Falso</option>
+                    <option value="UNICA" th:selected="${tipoFiltro == 'UNICA'}">Selección Única</option>
+                    <option value="MULTIPLE" th:selected="${tipoFiltro == 'MULTIPLE'}">Selección Múltiple</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+            </div>
+        </form>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Enunciado</th>
+                    <th>Tipo</th>
+                    <th>Respuesta</th>
+                    <th>Temática</th>
+                    <th sec:authorize="hasRole('ADMIN')">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="pregunta : ${preguntas.content}">
+                    <td th:text="${pregunta.id}">1</td>
+                    <td th:text="${pregunta.enunciado}">Enunciado</td>
+                    <td><span class="badge" th:text="${pregunta.tipoDescripcion}"
+                          th:classappend="${pregunta.tipo == 'ABIERTA'} ? 'bg-secondary' : (pregunta.tipo == 'V_F' ? 'bg-info' : (pregunta.tipo == 'UNICA' ? 'bg-primary' : 'bg-success'))"></span></td>
+                    <td>
+                        <span th:if="${pregunta.tipo == 'ABIERTA'}" th:text="${pregunta.respuesta}">Respuesta</span>
+                        <span th:if="${pregunta.tipo == 'V_F'}" th:text="${pregunta.esVerdadero} ? 'Verdadero' : 'Falso'"></span>
+                        <span th:if="${pregunta.tipo == 'UNICA'}" th:text="${pregunta.opcionCorrecta}">Opción</span>
+                        <span th:if="${pregunta.tipo == 'MULTIPLE'}" th:text="${pregunta.opcionesCorrectas}">Opciones</span>
+                    </td>
+                    <td th:text="${pregunta.tematica.nombre}">Temática</td>
+                    <td sec:authorize="hasRole('ADMIN')">
+                        <span>
+                            <a class="btn btn-sm btn-warning" th:href="@{/preguntas/editar/{id}(id=${pregunta.id})}">Editar</a>
+                            <a class="btn btn-sm btn-danger" th:href="@{/preguntas/eliminar/{id}(id=${pregunta.id})}"
+                               onclick="return confirm('¿Eliminar esta pregunta?')">Eliminar</a>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <nav th:if="${preguntas.totalPages > 1}" aria-label="Paginación">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${preguntas.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/preguntas(page=0, size=${preguntas.size}, tematicaId=${tematicaId}, tipo=${tipoFiltro})}">&laquo;</a>
+                </li>
+                <li class="page-item" th:classappend="${preguntas.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/preguntas(page=${preguntas.number - 1}, size=${preguntas.size}, tematicaId=${tematicaId}, tipo=${tipoFiltro})}">&lsaquo;</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, preguntas.totalPages - 1)}"
+                    th:classappend="${i == preguntas.number} ? 'active'">
+                    <a class="page-link" th:href="@{/preguntas(page=${i}, size=${preguntas.size}, tematicaId=${tematicaId}, tipo=${tipoFiltro})}" th:text="${i + 1}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${preguntas.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/preguntas(page=${preguntas.number + 1}, size=${preguntas.size}, tematicaId=${tematicaId}, tipo=${tipoFiltro})}">&rsaquo;</a>
+                </li>
+                <li class="page-item" th:classappend="${preguntas.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/preguntas(page=${preguntas.totalPages - 1}, size=${preguntas.size}, tematicaId=${tematicaId}, tipo=${tipoFiltro})}">&raquo;</a>
+                </li>
+            </ul>
+        </nav>
+        <p th:if="${preguntas.totalPages > 0}" class="text-center text-muted">
+            Página <span th:text="${preguntas.number + 1}">1</span>
+            de <span th:text="${preguntas.totalPages}">1</span>
+            (<span th:text="${preguntas.totalElements}">0</span> preguntas)
+        </p>
+    </div>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

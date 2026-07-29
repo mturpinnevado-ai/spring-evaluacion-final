@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados - Juego Trivial</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="text-center mb-4">
+                    <h1>Resultados</h1>
+                </div>
+
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body text-center py-5">
+                        <div th:if="${sesion.puntuacion >= sesion.total * 0.7}" class="display-1 text-success">&#9733;</div>
+                        <div th:if="${sesion.puntuacion >= sesion.total * 0.4 and sesion.puntuacion < sesion.total * 0.7}" class="display-1 text-warning">&#9733;</div>
+                        <div th:if="${sesion.puntuacion < sesion.total * 0.4}" class="display-1 text-danger">&#9733;</div>
+                        <h2 class="display-4" th:text="${sesion.puntuacion + ' / ' + sesion.total}">0 / 10</h2>
+                        <p class="lead" th:text="${sesion.puntuacion * 100 / sesion.total} + '%'">0%</p>
+                        <p th:if="${sesion.puntuacion >= sesion.total * 0.9}" class="text-success fs-4">¡Excelente! Dominas el tema.</p>
+                        <p th:if="${sesion.puntuacion >= sesion.total * 0.7 and sesion.puntuacion < sesion.total * 0.9}" class="text-success fs-4">¡Muy bien! Tienes un buen conocimiento.</p>
+                        <p th:if="${sesion.puntuacion >= sesion.total * 0.4 and sesion.puntuacion < sesion.total * 0.7}" class="text-warning fs-4">Puedes mejorar. Sigue practicando.</p>
+                        <p th:if="${sesion.puntuacion < sesion.total * 0.4}" class="text-danger fs-4">Necesitas repasar los conceptos.</p>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 mb-4">
+                    <a class="btn btn-success btn-lg" th:href="@{/juego}">Jugar de nuevo</a>
+                    <a class="btn btn-outline-secondary" th:href="@{/}">Volver al inicio</a>
+                </div>
+
+                <div th:if="${!sesion.respuestas.isEmpty()}">
+                    <h3 class="mb-3">Detalle de respuestas</h3>
+                    <div class="list-group">
+                        <div th:each="r : ${sesion.respuestas}" class="list-group-item list-group-item-action"
+                             th:classappend="${r.correcta} ? 'list-group-item-success' : 'list-group-item-danger'">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">
+                                    <span th:text="${r.correcta} ? '&#10003;' : '&#10007;'"></span>
+                                    <span th:text="${r.enunciado}">Enunciado</span>
+                                </h6>
+                                <small>
+                                    <span class="badge"
+                                          th:classappend="${r.tipo == 'ABIERTA'} ? 'bg-secondary' : (${r.tipo == 'V_F'} ? 'bg-info' : (${r.tipo == 'UNICA'} ? 'bg-primary' : 'bg-success'))"
+                                          th:text="${r.tipo}">Tipo</span>
+                                </small>
+                            </div>
+                            <div th:if="${!r.correcta}" class="mt-2">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <small class="text-danger">
+                                            <strong>Tu respuesta:</strong> <span th:text="${r.respuestaUsuario} ?: '(sin respuesta)'">-</span>
+                                        </small>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <small class="text-success">
+                                            <strong>Correcta:</strong> <span th:text="${r.respuestaCorrecta}">-</span>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div th:if="${r.correcta}" class="mt-1">
+                                <small class="text-success"><strong>Respuesta:</strong> <span th:text="${r.respuestaCorrecta}">-</span></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

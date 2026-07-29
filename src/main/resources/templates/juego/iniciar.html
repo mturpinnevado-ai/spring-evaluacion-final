@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego Trivial - Evaluación Final</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="text-center mb-4">
+                    <h1>Juego Trivial</h1>
+                    <p class="lead">Selecciona una temática para comenzar</p>
+                </div>
+
+                <form th:action="@{/juego/iniciar}" method="post" class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <label for="tematicaId" class="form-label fs-5">Temática</label>
+                            <select id="tematicaId" name="tematicaId" class="form-select form-select-lg">
+                                <option value="">Todas las temáticas</option>
+                                <option th:each="t : ${tematicas}" th:value="${t.id}" th:text="${t.nombre}"></option>
+                            </select>
+                            <div class="form-text">Selecciona una temática o elige "Todas las temáticas" para jugar con preguntas de todas las categorías.</div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg">Comenzar Juego</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
